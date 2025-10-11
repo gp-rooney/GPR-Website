@@ -7,38 +7,7 @@
   <meta name="description" content="Grant Rooney — 500 words/500 days. Writing, notes, and more." />
   <meta property="og:title" content="Grant Rooney" />
   <meta property="og:description" content="500 words/500 days. Writing, notes, and more." />
-  <style>
-    :root{ --bg:#ffffff; --fg:#0b0b0b; --muted:#595959; --border:#e8e8e8; --accent:#111; --wrap:820px }
-    @media (prefers-color-scheme: dark){ :root{ --bg:#0b0b0b; --fg:#f6f6f6; --muted:#b7b7b7; --border:#222; --accent:#fff } }
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.5}
-    a{color:inherit;text-decoration:none;border-bottom:1px solid var(--border)}
-    a:hover{border-bottom-color:var(--fg)}
-    .wrap{max-width:var(--wrap);margin:0 auto;padding:24px}
-    header.site{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);padding:16px 0;margin-bottom:24px}
-    nav a{margin-left:16px}
-    h1{font-size:clamp(28px,4vw,40px);margin:0}
-    h2{font-size:20px;margin:24px 0 12px}
-    .hero{display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:center}
-    .hero img{width:120px;height:120px;border-radius:16px;object-fit:cover;border:1px solid var(--border)}
-    .dash{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}
-    .card{border:1px solid var(--border);border-radius:16px;padding:14px}
-    .k{font-size:24px;font-weight:600}
-    .muted{color:var(--muted)}
-    .grid{display:grid;gap:12px}
-    .bestof li,.archive li{margin:6px 0}
-    .btn{display:inline-block;border:1px solid var(--fg);border-radius:999px;padding:10px 14px}
-    .btn:hover{background:var(--fg);color:var(--bg)}
-    .section{display:none}
-    .section.active{display:block}
-    footer{border-top:1px solid var(--border);margin-top:40px;padding-top:16px;color:var(--muted);font-size:14px}
-    .subscribe{border:1px dashed var(--border);border-radius:16px;padding:16px;margin:18px 0}
-    .pill{display:inline-block;background:transparent;border:1px solid var(--border);padding:2px 8px;border-radius:999px;font-size:12px;color:var(--muted)}
-    .list-tight{padding-left:18px}
-    .heatmap{display:grid;grid-template-columns:repeat(35,10px);gap:4px}
-    .day{width:10px;height:10px;background:#dcdcdc;border-radius:2px}
-    .day.hit{background:#1a8917}
-    .sr{position:absolute;left:-9999px}
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="wrap">
@@ -57,10 +26,11 @@
       <div class="hero">
         <img src="https://placehold.co/240x240" alt="Grant Rooney" />
         <div>
+          <span class="badge">500/500</span>
           <h1>Grant Rooney</h1>
-          <p class="muted">Economics @ Chico State (’25). Writing daily-ish to find my voice. This site tracks a <strong>500 words × 500 days</strong> experiment.</p>
-          <div class="grid" style="margin-top:8px">
-            <a class="btn" href="#rules">What is 500/500?</a>
+          <p class="subtitle">Economics @ Chico State (’25). Writing daily-ish to find my voice. This site tracks a <strong>500 words × 500 days</strong> experiment.</p>
+          <div class="actions">
+            <a class="btn primary" href="#rules">What is 500/500?</a>
             <a class="btn" href="#archive">Browse the archive</a>
           </div>
         </div>
@@ -68,19 +38,25 @@
 
       <div class="dash">
         <div class="card">
-          <div class="muted">Days in</div>
+          <div class="muted">Day</div>
           <div class="k" id="daysCount">–</div>
         </div>
         <div class="card">
-          <div class="muted">Words (min)</div>
+          <div class="muted">Words so far</div>
           <div class="k" id="minWords">–</div>
         </div>
         <div class="card">
-          <div class="muted">Random day</div>
-          <div class="k"><button id="rndBtn" class="btn" style="padding:8px 12px">Surprise me</button></div>
+          <div class="muted" style="display:flex;justify-content:space-between;align-items:center">
+            <span>Progress</span>
+            <button id="rndBtn" class="btn" style="padding:6px 10px">Random day</button>
+          </div>
+          <div class="progress" aria-label="Progress to 500 days">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="muted" id="progressLabel" style="margin-top:6px">0% of 500</div>
         </div>
       </div>
-
+ 
       <div class="subscribe">
         <h2>Subscribe</h2>
         <p class="muted">Weekly digest of what I wrote. No fluff.</p>
@@ -168,6 +144,11 @@
     const daysIn = Math.max(1, Math.floor((Date.now() - new Date(START_DATE).getTime()) / MS_DAY) + 1);
     document.getElementById('daysCount').textContent = daysIn;
     document.getElementById('minWords').textContent = (daysIn * 500).toLocaleString();
+    
+    // NEW: progress bar (uses your existing daysIn)
+    const pct = Math.min(100, Math.round((daysIn / 500) * 100));
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = `${pct}% of 500`;
 
     // Random Day button
     document.getElementById('rndBtn').addEventListener('click', () => {
